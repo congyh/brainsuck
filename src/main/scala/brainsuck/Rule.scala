@@ -31,7 +31,7 @@ object RulesExecutor {
 
   private def executeBatch[T <: TreeNode[T]](batch: Batch[T], tree: T) = {
     def executeRules(rules: Seq[Rule[T]], tree: T) =
-      rules.foldLeft(tree) { case (toTransform, rule) => rule(toTransform) }
+      rules.foldLeft(tree) { case (toTransform, rule) => rule(toTransform) } // Note: TODO: foldLeft和foldRight是怎么回事.
 
     @tailrec def untilFixedPoint(rules: Seq[Rule[T]], tree: T, maxIterations: Int): T = {
       val transformed = executeRules(rules, tree)
@@ -48,6 +48,6 @@ object RulesExecutor {
     }
   }
 
-  def apply[T <: TreeNode[T]](tree: T, batches: Seq[Batch[T]]): T =
+  def apply[T <: TreeNode[T]](tree: T, batches: Seq[Batch[T]]): T = // Note: 唯一的一个调用: code: Instruction, batches: Seq[Batch[Instruction]].
     batches.foldLeft(tree) { case (toTransform, batch) => executeBatch(batch, toTransform) }
 }
