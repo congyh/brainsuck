@@ -99,7 +99,7 @@ object Interpreter { // Note: 程序入口
         }
 
         val optimized = benchmark("Optimization") {
-          if (optimizationLevel > 0) optimizer(code) else code // Note: 这里可以启用optimizer, 也可以不启用, 可以在本文件的最下面看不同optimizationLevel的运行结果
+          if (optimizationLevel > 0) optimizer(code) else code // Note: 这里个人感觉代码不太易读, 虽然通过apply控制了封装, 但是optimizer(code)的可读性个人觉得是不如optimizer.optimize(code)的
         }
 
         benchmark("Execution") {

@@ -48,7 +48,7 @@ case class In(child: Instruction) extends UnaryInstruction {
   override def run(machine: Machine) = machine.value = System.in.read() // Note: In指令 (相当于brainfuck语言的','指令), 接收一字符的数据输入, 在hanoi.b程序中没有用到这个指令, optimizer中也不会用到.
 }
 
-case class Loop(body: Instruction, next: Instruction) extends Instruction {
+case class Loop(body: Instruction, next: Instruction) extends Instruction { // Note: 注意Loop和前面的指令不同, 除了next instruction, 还有一个body instruction.
   override def children = Seq(body, next)
   override protected def makeCopy(args: Seq[Instruction]) = copy(body = args.head, next = args.last)
   override def run(machine: Machine) = {
