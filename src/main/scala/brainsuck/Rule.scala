@@ -19,11 +19,11 @@ object RulesExecutor {
     require(maxIterations > 0 || maxIterations == -1)
   }
 
-  case object FixedPoint { // Note: TODO: 上面的FixedPoint case class和这里case object的联动, 是否就是Scala定义单例的方式?
+  case object FixedPoint { // Note: 上面的FixedPoint case class和这里case object的联动, 是Scala定义单例的方式.
     val Unlimited = FixedPoint(-1)
   }
 
-  case class Batch[BaseType <: TreeNode[BaseType]]( // Note: TODO: 这里Batch为什么要定义成TreeNode类型?
+  case class Batch[BaseType <: TreeNode[BaseType]]( // Note: 这里并不是Batch定义成TreeNode类型, 而是为rule定义的, 这就是一个type parameter.
     name: String,
     rules: Seq[Rule[BaseType]],
     strategy: Strategy

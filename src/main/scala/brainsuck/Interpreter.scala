@@ -52,14 +52,14 @@ class Machine(var pointer: Int, val memory: Memory) {
   override def toString = s"$pointer @ $memory"
 }
 
-trait Optimizer { // Note: TODO: 总结下Optimizer是做啥的.
+trait Optimizer {
   def batches: Seq[Batch[Instruction]] // Note: Optimizer就是接收一组batches, 然后转发给RulesExecutor进行执行的?
 
   def apply(code: Instruction) = RulesExecutor(code, batches)
 }
 
 object Interpreter { // Note: 程序入口
-  case class Config(optimizationLevel: Int = 2, input: File = null) // Note: TODO: 关注下这个optimizationLevel是干啥的? 还有这里竟然用了null, 真少见
+  case class Config(optimizationLevel: Int = 2, input: File = null) // Note: optimizationLevel决定了后续用多少优化器, 注意这里input竟然用了null, 在Scala代码中非常少见.
 
   private def benchmark[T](desc: String)(f: => T) = { // Note: 这里的f是code block作为参数的写法, 这里用到了柯里化, 下面89行和101行都是实例, 可以发现scalatest也是类似的写法
     val start = System.nanoTime()
@@ -93,7 +93,7 @@ object Interpreter { // Note: 程序入口
         val optimizer = new Optimizer { // Note: 这里直接定义了一个匿名内部类实现
           override def batches =
             Seq(
-              Batch("Contraction", MergeAdds :: MergeMoves :: Nil, FixedPoint.Unlimited), // Note: Contraction的意思是收缩, TODO: 在这里的意思是否是合并相同步骤的意思?
+              Batch("Contraction", MergeAdds :: MergeMoves :: Nil, FixedPoint.Unlimited), // Note: Contraction的意思是收缩, 在这里是合并连续相同步骤的意思.
               Batch("LoopSimplification", Clears :: Scans :: MultisAndCopies :: Nil, Once)
             ).take(optimizationLevel) // Note: take的作用是, 从Seq中取出前n个元素
         }
@@ -108,11 +108,3 @@ object Interpreter { // Note: 程序入口
     }
   }
 }
-
-/**
- * optimizationLevel 0:
- *
- * Parsing: 165.800773
- * Optimization: 0.002703
- * Execution: 57157.59439
- */

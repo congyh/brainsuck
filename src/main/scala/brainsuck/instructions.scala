@@ -40,7 +40,7 @@ case class Scan(n: Int, child: Instruction) extends UnaryInstruction {
 
 case class Out(child: Instruction) extends UnaryInstruction {
   override protected def makeCopy(args: Seq[Instruction]) = copy(child = args.head)
-  override def run(machine: Machine) = print(machine.value.toChar) // Note: Out指令 (相当于brainfuck语言的'.'指令), 输出memory此处的value值, optimizer中也不会用到这个指令. 这里toChar是int to char, TODO: 是否输出端破案了??
+  override def run(machine: Machine) = print(machine.value.toChar) // Note: Out指令 (相当于brainfuck语言的'.'指令), 输出memory此处的value值, optimizer中也不会用到这个指令. 这里toChar是int to char, 用于屏幕输出.
 }
 
 case class In(child: Instruction) extends UnaryInstruction {
@@ -60,7 +60,7 @@ case class Loop(body: Instruction, next: Instruction) extends Instruction {
 
 case class Clear(child: Instruction) extends UnaryInstruction { // Note: Clear还有下面的Copy和Multi都是二阶优化 (LoopSimplification) 中对循环优化所产生的拓展指令.
   override protected def makeCopy(args: Seq[Instruction]) = copy(child = args.head)
-  override def run(machine: Machine) = machine.value = 0 // Note: 这个看起来很好理解, 但是 TODO: 需要确认下什么时候用到的这个优化
+  override def run(machine: Machine) = machine.value = 0 // Note: 这个看起来很好理解, 就是当连续的增减能够抵消的话, 直接将pointer位置赋值为0即可.
 }
 
 case class Copy(offset: Int, child: Instruction) extends UnaryInstruction {
@@ -76,8 +76,8 @@ case class Multi(offset: Int, n: Int, child: Instruction) extends UnaryInstructi
 object Instruction {
   def untilHalt(code: Instruction, machine: Machine): Unit = { // Note: Instruction是递归数据结构.
     var next = code
-    while (next ne Halt) {
-      next.run(machine) // Note: TODO: 需要看下machine在这里的作用是什么
+    while (next ne Halt) { // Note: TODO: ne方法没有定义呀
+      next.run(machine)
       next = next.next
     }
   }

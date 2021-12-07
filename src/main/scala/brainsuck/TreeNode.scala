@@ -1,7 +1,7 @@
 package brainsuck
 
 trait TreeNode[BaseType <: TreeNode[BaseType]] { // Note: 这里就是递归类型的定义
-  self: BaseType => // Note: TODO: 这里个人感觉好像有点多余了.
+  self: BaseType =>
 
   def children: Seq[BaseType] // Note: Scala中默认是public方法, 下面的protected打头的是为了定义模板方法的, 子类实现父类调用.
 
@@ -26,7 +26,7 @@ trait TreeNode[BaseType <: TreeNode[BaseType]] { // Note: 这里就是递归类�
   private def transformChildrenDown(rule: PartialFunction[BaseType, BaseType]): BaseType =
     this.withChildren(children.map(_ transformDown rule)) // Note: 在这里完成了递归操作
 
-  def transformUp(rule: PartialFunction[BaseType, BaseType]): BaseType = { // Note: transformDown和transformUp的区别就是, 一个是自顶向下递归变换, 一个是自底向上递归变换.
+  def transformUp(rule: PartialFunction[BaseType, BaseType]): BaseType = { // Note: transformDown和transformUp的区别就是, 一个是前序变换 一个是后序变换.
     val childrenTransformed = transformChildrenUp(rule)
     if (this same childrenTransformed) rule.applyOrElse(this, identity[BaseType])
     else rule.applyOrElse(childrenTransformed, identity[BaseType])
