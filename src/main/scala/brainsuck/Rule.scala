@@ -3,7 +3,7 @@ package brainsuck
 import scala.annotation.tailrec
 
 trait Rule[BaseType <: TreeNode[BaseType]] {
-  def apply(tree: BaseType): BaseType
+  def apply(tree: BaseType): BaseType // Note: 定义Rule为TreeNode->TreeNode的一种变换
 }
 
 object RulesExecutor {
@@ -19,11 +19,11 @@ object RulesExecutor {
     require(maxIterations > 0 || maxIterations == -1)
   }
 
-  case object FixedPoint {
+  case object FixedPoint { // Note: TODO: 上面的FixedPoint case class和这里case object的联动, 是否就是Scala定义单例的方式?
     val Unlimited = FixedPoint(-1)
   }
 
-  case class Batch[BaseType <: TreeNode[BaseType]](
+  case class Batch[BaseType <: TreeNode[BaseType]]( // Note: TODO: 这里Batch为什么要定义成TreeNode类型?
     name: String,
     rules: Seq[Rule[BaseType]],
     strategy: Strategy

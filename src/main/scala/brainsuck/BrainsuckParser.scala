@@ -2,15 +2,15 @@ package brainsuck
 
 import scala.util.parsing.combinator.RegexParsers
 
-class BrainsuckParser extends RegexParsers {
-  def apply(input: String) =
-    parseAll(instructions, input) match {
-      case Success(compiled, _) => compiled
+class BrainsuckParser extends RegexParsers { // Note: RegexParsers是Scala标准库中的工具类
+  def apply(input: String) = // Note: 这里相当于将apply方法直接adapt到了RegexParsers的parseAll方法上
+    parseAll(instructions, input) match { // Note: parseAll是RegexParsers中的一个方法
+      case Success(compiled, _) => compiled // Note: 如果解析成功了, 返回代码
       case failureOrError       => sys.error(failureOrError.toString)
     }
 
   def instructions: Parser[Instruction] =
-    instruction.* ^^ {
+    instruction.* ^^ { // Note: 这里的*, ^^, 包括后面的^^^, |, ~>, <~都是Scala标准库中的Parser定义的运算符重载, 真是太草了
       case seq => seq.foldRight(Halt: Instruction)(_ apply _)
     }
 
