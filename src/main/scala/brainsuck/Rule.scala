@@ -19,7 +19,7 @@ object RulesExecutor {
     require(maxIterations > 0 || maxIterations == -1)
   }
 
-  case object FixedPoint { // Note: 上面的FixedPoint case class和这里case object的联动, 是Scala定义单例的方式.
+  case object FixedPoint {
     val Unlimited = FixedPoint(-1)
   }
 
@@ -31,7 +31,7 @@ object RulesExecutor {
 
   private def executeBatch[T <: TreeNode[T]](batch: Batch[T], tree: T) = {
     def executeRules(rules: Seq[Rule[T]], tree: T) =
-      rules.foldLeft(tree) { case (toTransform, rule) => rule(toTransform) } // Note: TODO: foldLeft和foldRight是怎么回事.
+      rules.foldLeft(tree) { case (toTransform, rule) => rule(toTransform) }
 
     @tailrec def untilFixedPoint(rules: Seq[Rule[T]], tree: T, maxIterations: Int): T = {
       val transformed = executeRules(rules, tree)

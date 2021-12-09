@@ -5,7 +5,7 @@ trait TreeNode[BaseType <: TreeNode[BaseType]] { // Note: 这里就是递归类�
 
   def children: Seq[BaseType] // Note: Scala中默认是public方法, 下面的protected打头的是为了定义模板方法的, 子类实现父类调用.
 
-  def same(that: BaseType) = (this eq that) || this == that // Note: TODO: eq这个方法没有定义呀
+  def same(that: BaseType) = (this eq that) || this == that // Note: eq方法实际上就是equals, case class都实现了这个.
 
   protected def sameChildren(otherChildren: Seq[BaseType]) =
     children.size == otherChildren.size && children.lazyZip(otherChildren).forall(_ same _) // Note: 这个lazyZip也是绝了, Scala为了提升性能真是无所不作.

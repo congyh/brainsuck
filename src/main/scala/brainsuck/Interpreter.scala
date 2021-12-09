@@ -53,7 +53,7 @@ class Machine(var pointer: Int, val memory: Memory) {
 }
 
 trait Optimizer {
-  def batches: Seq[Batch[Instruction]] // Note: TODO: Optimizer就是接收一组batches, 然后转发给RulesExecutor进行执行的?
+  def batches: Seq[Batch[Instruction]]
 
   def apply(code: Instruction) = RulesExecutor(code, batches)
 }

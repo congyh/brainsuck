@@ -15,12 +15,12 @@ sealed trait UnaryInstruction extends Instruction with UnaryNode[Instruction] {
   def next: Instruction = child
 }
 
-case object Halt extends LeafInstruction {
+case object Halt extends LeafInstruction { // Note: Halt是一个典型的Scala单例模式应用
   override def run(machine: Machine) = () // Note: TODO: 看下Halt是用来干啥的?
 }
 
 case class Add(n: Int, child: Instruction) extends UnaryInstruction {
-  override protected def makeCopy(args: Seq[Instruction]) = copy(child = args.head) // Note: TODO: 理解下这个函数
+  override protected def makeCopy(args: Seq[Instruction]) = copy(child = args.head) // Note: 为了避免改变状态, 每次变更都应该copy, 而不是在原来的TreeNode上修改.
   override def run(machine: Machine) = machine.value += n // Note: Add指令 (相当于合并了brainfuck语言的'+', '-'指令, 并进行了强化), 就是将pointer所在的位置的memory value变更n
 }
 
@@ -76,7 +76,7 @@ case class Multi(offset: Int, n: Int, child: Instruction) extends UnaryInstructi
 object Instruction {
   def untilHalt(code: Instruction, machine: Machine): Unit = { // Note: Instruction是递归数据结构.
     var next = code
-    while (next ne Halt) { // Note: TODO: ne方法没有定义呀
+    while (next ne Halt) { // Note: ne实际上底层依赖的是equals方法, case class都自动定义了这个.
       next.run(machine)
       next = next.next
     }
